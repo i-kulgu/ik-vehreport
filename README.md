@@ -6,6 +6,10 @@ Use it at your own risk and report the bugs / errors so i can fix it.
 
 You can reach me at [Hi-Dev](https://discord.com/invite/pSJPPctrNx)
 
+# Preview 
+
+https://youtu.be/i61r_mrW_8A
+
 # Explanation
 
 With this resource you can show mod information of an owned car.

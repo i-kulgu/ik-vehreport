@@ -31,8 +31,30 @@ end
 
 local function IsPlayerOwnedVehicle(plate)
     local p = promise.new()
-	QBCore.Functions.TriggerCallback('ik-vehreports:server:IsVehicleOwnedByPlayer', function(cb) p:resolve(cb) end, plate)
+	    QBCore.Functions.TriggerCallback('ik-vehreports:server:IsVehicleOwnedByPlayer', function(cb) p:resolve(cb) end, plate)
     return Citizen.Await(p)
+end
+
+local function ClearProps(playerPed)
+    ClearPedTasks(playerPed)
+    for _, v in pairs(GetGamePool('CObject')) do
+        if IsEntityAttachedToEntity(playerPed, v) then
+            DeleteObject(v)
+            DetachEntity(v, 0, 0)
+            SetEntityAsMissionEntity(v, true, true)
+            Wait(100)
+            DeleteEntity(v)
+        end
+    end
+end
+
+local function TurnFaceToEntity(vehicle)
+    if DoesEntityExist(vehicle) then
+        if not IsPedHeadingTowardsPosition(PlayerPedId(), GetEntityCoords(vehicle), 30.0) then
+            TaskTurnPedToFaceCoord(PlayerPedId(), GetEntityCoords(vehicle), 1500)
+            Wait(1500)
+        end
+    end
 end
 
 
@@ -48,12 +70,24 @@ RegisterNetEvent("ik-vehreports:client:inspectVehicle", function(vehicle)
     local armor = CheckMod(vehicle, 15, false)
     local turbo = CheckMod(vehicle, 18, true)
     local Mods = {vehname = vehicleName, plate = plate, engine = engine, brakes = brakes, transmission = transmission, suspension = suspension, armor = armor, turbo= turbo}
-
-    SendNuiMessage({
-        action = "show",
-        mods = Mods
-    })
-    SetNuiFocus(true, true)
+    TurnFaceToEntity(vehicle)
+    QBCore.Functions.Progressbar("drink_something", "Inspecting vehicle...", 5000, false, true, {
+        disableMovement = true,
+        disableCarMovement = true,
+        disableMouse = false,
+        disableCombat = false, },
+    { animDict = "anim@amb@board_room@whiteboard@", anim = "think_01_amy_skater_01", flags = 8, },
+    {}, {}, function()
+        ClearProps(PlayerPedId())
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CLIPBOARD", 0, true)
+        SendNUIMessage({
+            action = "show",
+            mods = Mods
+        })
+        SetNuiFocus(true, true)
+    end, function() -- Cancel
+        ClearProps(PlayerPedId())
+    end)
 end)
 
 exports['qb-target']:AddGlobalVehicle({
@@ -73,5 +107,6 @@ exports['qb-target']:AddGlobalVehicle({
 })
 
 RegisterNUICallback('close', function()
+    ClearProps(PlayerPedId())
     SetNuiFocus(false, false)
 end)
