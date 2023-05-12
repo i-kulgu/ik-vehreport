@@ -1,3 +1,8 @@
+html, body{
+  user-select: none;
+  background-color:transparent!important;
+}
+
 .vehreports-container {
   display: none;
 }

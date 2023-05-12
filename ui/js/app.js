@@ -1,5 +1,4 @@
 window.addEventListener("message", function(event){
-    $(".vehreports-container").css("display", "block")
     if(event.data.action == "show"){
         var CarInfo = event.data.mods
         $(".vehreports-container").css("display", "block")
