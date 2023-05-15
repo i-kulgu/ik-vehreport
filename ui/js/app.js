@@ -15,7 +15,7 @@ window.addEventListener("message", function(event){
         if (CarInfo.nos) {
             $("#nos").html(CarInfo.nos)
         } else {
-            $("#nos").html("")
+            $("#nos-group").html("")
         }
     }
 });
