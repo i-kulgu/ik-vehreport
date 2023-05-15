@@ -1,3 +1,5 @@
+
+
 window.addEventListener("message", function(event){
     if(event.data.action == "show"){
         var CarInfo = event.data.mods
@@ -10,6 +12,11 @@ window.addEventListener("message", function(event){
         $("#suspension").html(CarInfo.suspension)
         $("#armor").html(CarInfo.armor)
         $("#turbo").html(CarInfo.turbo)
+        if (CarInfo.nos) {
+            $("#nos").html(CarInfo.nos)
+        } else {
+            $("#nos").html("")
+        }
     }
 });
 
@@ -25,5 +32,6 @@ window.addEventListener("keydown", (e) => {
         $("#suspension").html("")
         $("#armor").html("")
         $("#turbo").html("")
+        $("#nos").html("")
     }
 });

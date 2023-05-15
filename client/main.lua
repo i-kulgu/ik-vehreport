@@ -1,6 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local VehName = nil
 local LastVeh = nil
+local PlayerJob = {}
 
 local function GetVehicleName(vehicle)
     if LastVeh ~= vehicle and not VehName then
@@ -57,6 +58,22 @@ local function TurnFaceToEntity(vehicle)
     end
 end
 
+local function HasNitro(plate)
+    local p = promise.new() QBCore.Functions.TriggerCallback('jim-mechanic:GetNosLoaded', function(cb) p:resolve(cb) end) local VehicleNitrous = Citizen.Await(p)
+    if VehicleNitrous[plate] then
+        if VehicleNitrous[plate].hasnitro == "1" then return "YES" else return "NO" end
+    end
+end
+
+local function HasAllowedJob()
+    local isAllowed = false
+    for i=1, #Config.AllowedJobs do
+        if Config.AllowedJobs[i] == PlayerJob then
+            isAllowed = true
+        end
+    end
+    return isAllowed
+end
 
 RegisterNetEvent("ik-vehreports:client:inspectVehicle", function(vehicle)
     if not DoesEntityExist(vehicle) then return end
@@ -69,7 +86,14 @@ RegisterNetEvent("ik-vehreports:client:inspectVehicle", function(vehicle)
     local suspension = CheckMod(vehicle, 15, false)
     local armor = CheckMod(vehicle, 15, false)
     local turbo = CheckMod(vehicle, 18, true)
-    local Mods = {vehname = vehicleName, plate = plate, engine = engine, brakes = brakes, transmission = transmission, suspension = suspension, armor = armor, turbo= turbo}
+    local Mods = {}
+    if Config.ShowNos then
+        local nos = HasNitro(plate)
+        Mods = {vehname = vehicleName, plate = plate, engine = engine, brakes = brakes, transmission = transmission, suspension = suspension, armor = armor, turbo= turbo, nos = nos}
+    else
+        Mods = {vehname = vehicleName, plate = plate, engine = engine, brakes = brakes, transmission = transmission, suspension = suspension, armor = armor, turbo= turbo}
+    end
+
     TurnFaceToEntity(vehicle)
     QBCore.Functions.Progressbar("drink_something", "Inspecting vehicle...", 5000, false, true, {
         disableMovement = true,
@@ -98,9 +122,9 @@ exports['qb-target']:AddGlobalVehicle({
         label = 'Inspect Vehicle',
         action = function(entity)
             if not IsEntityAVehicle(entity) then return false end
+            if Config.JobsOnly and not HasAllowedJob() then return false end
             TriggerEvent("ik-vehreports:client:inspectVehicle", entity)
         end,
-        jobType = {'leo', 'mechanic'},
       }
     },
     distance = 2.5,
@@ -110,3 +134,7 @@ RegisterNUICallback('close', function()
     ClearProps(PlayerPedId())
     SetNuiFocus(false, false)
 end)
+
+
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function() local player = QBCore.Functions.GetPlayerData() PlayerJob = player.job end)
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo) PlayerJob = JobInfo end)

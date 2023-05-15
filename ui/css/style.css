@@ -92,12 +92,30 @@ html, body{
 
 .report-title{
   font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1vw;
 }
 
 .badge {
   min-width: 5vw;
+}
+
+.receipt-btn-group{
+  display: flex;
+  justify-content: center;
+  margin-top: 0.3vw;
+}
+
+.fade:not(.show) {
+  opacity: 10;
+}
+
+.modal-backdrop {
+  opacity: 0% !important;
+}
+
+.input-group-prepend{
+  min-width: 7vw;
 }
