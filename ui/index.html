@@ -17,15 +17,15 @@
   <div class="container">
     <div class="vehreports-container-inner mt-4 pt-4">
       <div class="product-card-cart">
-        <div class="logo-container"><a href="#" class="product-card-cart-link"><img src="img/bennys.png" alt=""></a>
+        <div class="logo-container" id="logo-container"><a href="#" class="product-card-cart-link"><img src="img/bennys.png" alt=""></a>
             <div class="report-title">Vehicle Inspection Report</div>
             <div class="list-group-item">
               <div class="vehreports-content-name" style="display: flex;justify-content: center;"> BMW X5M </div>
               <div class="vehreports-content-plate" style="display: flex;justify-content: center;"> <span class="badge bg-dark" id="plate">123 ABC</span> </div>
             </div>
-            <div class="receipt-btn-group">
+            <!-- <div class="receipt-btn-group">
               <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#exampleModalCenter">Send Receipt</button>
-            </div>
+            </div> -->
         </div>
         <div class="list-group list-group-flush vehreports-card-content">
           <div class="list-group-item">
@@ -82,19 +82,19 @@
                 </div>
                 <div class="input-group mb-5">
                   <div class="input-group-prepend">
-                    <label class="input-group-text" for="inputGroupSelect01">User (ID)</label>
+                    <label class="input-group-text" for="nearbyplayersselection">User (ID)</label>
                   </div>
-                  <select class="form-control" id="inputGroupSelect01">
-                    <option selected>Choose...</option>
+                  <select class="form-control" id="nearbyplayersselection">
+                    <!-- <option selected>Choose...</option>
                     <option value="1">User 1</option>
                     <option value="2">User 2</option>
-                    <option value="3">User 3</option>
+                    <option value="3">User 3</option> -->
                   </select>
                 </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send</button>
+                <button type="button" class="btn btn-primary" id="send-receipt">Send</button>
               </div>
             </div>
           </div>

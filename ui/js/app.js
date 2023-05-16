@@ -1,5 +1,4 @@
 
-
 window.addEventListener("message", function(event){
     if(event.data.action == "show"){
         var CarInfo = event.data.mods
@@ -17,6 +16,15 @@ window.addEventListener("message", function(event){
         } else {
             $("#nos-group").html("")
         }
+        if (event.data.job == "true"){
+            $(".logo-container").append(`<div class="receipt-btn-group">
+            <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#exampleModalCenter">Send Receipt</button>
+          </div>`)
+        }
+    } else if (event.data.action == "NearPlayers"){
+        $.each(event.data.players, function (index, player) {
+            $("#nearbyplayersselection").append('<option value="'+player.ped+'">'+player.name+'</option>');
+        });
     }
 });
 
@@ -35,3 +43,14 @@ window.addEventListener("keydown", (e) => {
         $("#nos").html("")
     }
 });
+
+$(document).on("click", "#send-receipt", function () {
+    var pid = $("#nearbyplayersselection").val();
+    $.post('https://ik-vehreport/sendreceipt', JSON.stringify({
+        player: pid,
+    }))
+})
+
+$(document).on("click", "#sendreceipt", function () {
+    $.post('https://ik-vehreport/GetNearPlayers', JSON.stringify({}))
+})

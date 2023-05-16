@@ -7,6 +7,10 @@ game "gta5"
 
 ui_page 'ui/index.html'
 
+shared_scripts {
+    'config.lua'
+}
+
 client_scripts {
     'client/main.lua',
 }
