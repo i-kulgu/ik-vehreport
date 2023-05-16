@@ -9,6 +9,7 @@ ui_page 'ui/index.html'
 
 client_scripts {
     'client/main.lua',
+    'config.lua'
 }
 
 server_scripts {
