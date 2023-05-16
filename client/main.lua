@@ -117,6 +117,17 @@ RegisterNetEvent('ik-vehreports:client:inspectVehicle', function(vehicle)
     end)
 end)
 
+RegisterNetEvent('ik-vehcontrol:client:ReceiveReceiptConfirm', function(price, account, sendername, funds)
+    SendNUIMessage({
+        action = 'confirm',
+        price = price,
+        account = account,
+        sendername = sendername,
+        funds = funds
+    })
+    SetNuiFocus(true, true)
+end)
+
 exports['qb-target']:AddGlobalVehicle({
     options = {
       {
@@ -150,9 +161,17 @@ RegisterNUICallback('GetNearPlayers',function()
     end)
 end)
 
-RegisterNUICallback('sendreceipt', function(data)
+RegisterNUICallback('SendReceipt', function(data)
     local pid = data.player
-    TriggerServerEvent('ik-vehreports:server:GiveReceipt', pid)
+    local price = data.price
+    TriggerServerEvent('ik-vehreports:server:SendReceiptForConfirm', pid, price)
+end)
+
+RegisterNUICallback('AcceptReceipt', function(data)
+    local account = data.account
+    local price = data.price
+    local funds = data.funds
+    TriggerServerEvent('ik-vehreports:server:PayForReceipt', account, price, funds)
 end)
 
 RegisterNUICallback('close', function()

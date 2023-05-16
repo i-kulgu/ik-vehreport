@@ -9,3 +9,4 @@ Config.AllowedJobs = {
     "mechanic",
     "bennys",
 }
+Config.SendMoneyToFunds = true

@@ -24,7 +24,7 @@
               <div class="vehreports-content-plate" style="display: flex;justify-content: center;"> <span class="badge bg-dark" id="plate">123 ABC</span> </div>
             </div>
             <!-- <div class="receipt-btn-group">
-              <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#exampleModalCenter">Send Receipt</button>
+              <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#sendreceiptmodal">Send Receipt</button>
             </div> -->
         </div>
         <div class="list-group list-group-flush vehreports-card-content">
@@ -61,7 +61,7 @@
             <h5><span class="badge bg-secondary" id="nos">YES</span></h5>
           </div>
         </div>
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="sendreceiptmodal" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -78,7 +78,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">Receipt Price : </span>
                   </div>
-                  <input type="text" class="form-control" placeholder="$" aria-label="receipt-price" aria-describedby="receipt-price">
+                  <input type="text" class="form-control" id="receiptprice" placeholder="$" aria-label="receipt-price" aria-describedby="receipt-price">
                 </div>
                 <div class="input-group mb-5">
                   <div class="input-group-prepend">
@@ -100,6 +100,27 @@
           </div>
         </div>
       </div>      
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="confirmreceiptmodal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Confirm Receipt</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <blockquote class="blockquote text-center">
+          <p class="mb-0" id="confirmtext">Do you want to pay $2500 from your bank for the receipt that Pieter Post sends you ?</p>
+        </blockquote>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Deny</button>
+        <button type="button" class="btn btn-primary" id="accept-receipt">Accept</button>
+      </div>
     </div>
   </div>
 </div>
