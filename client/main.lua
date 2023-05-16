@@ -8,10 +8,10 @@ local function GetVehicleName(vehicle)
         LastVeh = vehicle
         VehName = nil
         for k, v in pairs(QBCore.Shared.Vehicles) do
-			if tonumber(v.hash) == GetEntityModel(vehicle) then
-			    VehName = QBCore.Shared.Vehicles[k].name
-			end
-		end
+            if tonumber(v.hash) == GetEntityModel(vehicle) then
+                VehName = QBCore.Shared.Vehicles[k].name
+            end
+        end
         if not VehName then VehName = string.upper(GetDisplayNameFromVehicleModel(GetEntityModel(vehicle))) end
         return VehName
     else return VehName end
@@ -32,7 +32,7 @@ end
 
 local function IsPlayerOwnedVehicle(plate)
     local p = promise.new()
-	    QBCore.Functions.TriggerCallback('ik-vehreports:server:IsVehicleOwnedByPlayer', function(cb) p:resolve(cb) end, plate)
+        QBCore.Functions.TriggerCallback('ik-vehreports:server:IsVehicleOwnedByPlayer', function(cb) p:resolve(cb) end, plate)
     return Citizen.Await(p)
 end
 
