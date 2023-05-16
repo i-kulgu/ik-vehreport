@@ -151,8 +151,8 @@ RegisterNUICallback('GetNearPlayers',function()
 end)
 
 RegisterNUICallback('sendreceipt', function(data)
-    -- local pid = data.player
-
+    local pid = data.player
+    TriggerServerEvent('ik-vehreports:server:GiveReceipt', pid)
 end)
 
 RegisterNUICallback('close', function()
