@@ -23,7 +23,7 @@ window.addEventListener("message", function(event){
         }
         if (event.data.job == "true"){
             $(".logo-container").append(`<div class="receipt-btn-group">
-            <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#sendreceiptmodal">Send Receipt</button>
+            <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#sendreceiptmodal" data-carinfo="`+CarInfo+`">Send Receipt</button>
           </div>`)
         }
     } else if (event.data.action == "NearPlayers"){
@@ -59,12 +59,28 @@ window.addEventListener("keydown", (e) => {
     }
 });
 
+$(document).on("click", "#close-btn", function () {
+    $.post('https://ik-vehreport/close')
+    $(".vehreports-container").css("display", "none")
+    $(".vehreports-content-name").html("")
+    $("#plate").html("")
+    $("#engine").html("")
+    $("#brakes").html("")
+    $("#transmission").html("")
+    $("#suspension").html("")
+    $("#armor").html("")
+    $("#turbo").html("")
+    $("#nos").html("")
+})
+
 $(document).on("click", "#send-receipt", function () {
     var pid = $("#nearbyplayersselection").val();
     var price = $("#receiptprice").val();
+    var carinfo = $('#send-receipt').data('carinfo')
     $.post('https://ik-vehreport/SendReceipt', JSON.stringify({
         player: pid,
-        price: price
+        price: price,
+        carinfo : carinfo
     }))
 })
 
