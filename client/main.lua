@@ -2,6 +2,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local VehName = nil
 local LastVeh = nil
 local PlayerJob = {}
+local Mods = {}
 
 local function GetVehicleName(vehicle)
     if LastVeh ~= vehicle and not VehName then
@@ -67,11 +68,12 @@ end
 
 local function HasAllowedJob()
     local isAllowed = false
-    for i=1, #Config.AllowedJobs do
-        if Config.AllowedJobs[i] == PlayerJob then
+    for _,v in pairs(Config.AllowedJobs) do
+        if v == PlayerJob.name then
             isAllowed = true
         end
     end
+    print('Job allowed = '..tostring(isAllowed))
     return isAllowed
 end
 
@@ -86,7 +88,6 @@ RegisterNetEvent('ik-vehreports:client:inspectVehicle', function(vehicle)
     local suspension = CheckMod(vehicle, 15, false)
     local armor = CheckMod(vehicle, 15, false)
     local turbo = CheckMod(vehicle, 18, true)
-    local Mods = {}
     local job = 'false'
     if Config.ShowNos then
         local nos = HasNitro(plate)
@@ -97,7 +98,7 @@ RegisterNetEvent('ik-vehreports:client:inspectVehicle', function(vehicle)
     if Config.JobsOnly and HasAllowedJob() then job = 'true' end
 
     TurnFaceToEntity(vehicle)
-    QBCore.Functions.Progressbar('drink_something', 'Inspecting vehicle...', 5000, false, true, {
+    QBCore.Functions.Progressbar('inspecting_vehicle', 'Inspecting vehicle...', 5000, false, true, {
         disableMovement = true,
         disableCarMovement = true,
         disableMouse = false,
@@ -117,7 +118,18 @@ RegisterNetEvent('ik-vehreports:client:inspectVehicle', function(vehicle)
     end)
 end)
 
-RegisterNetEvent('ik-vehcontrol:client:ReceiveReceiptConfirm', function(price, account, sendername, funds)
+RegisterNetEvent('ik-vehreports:client:showReport', function(mods)
+    local Mods = mods
+    SendNUIMessage({
+        action = 'show',
+        mods = Mods,
+        job = 'false'
+    })
+    SetNuiFocus(true, true)
+end)
+
+RegisterNetEvent('ik-vehcontrol:client:ReceiveReceiptConfirm', function(price, account, sendername, funds, mods)
+    Mods = mods
     SendNUIMessage({
         action = 'confirm',
         price = price,
@@ -135,10 +147,13 @@ exports['qb-target']:AddGlobalVehicle({
         icon = 'fas fa-magnifying-glass-chart',
         label = 'Inspect Vehicle',
         action = function(entity)
-            if not IsEntityAVehicle(entity) then return false end
-            if Config.JobsOnly and not HasAllowedJob() then return false end
             TriggerEvent('ik-vehreports:client:inspectVehicle', entity)
         end,
+        canInteract = function(entity)
+            if not IsEntityAVehicle(entity) then return false end
+            if Config.JobsOnly and HasAllowedJob() then return true end
+            if not Config.JobsOnly then return true end
+        end
       }
     },
     distance = 2.5,
@@ -162,16 +177,18 @@ RegisterNUICallback('GetNearPlayers',function()
 end)
 
 RegisterNUICallback('SendReceipt', function(data)
+    -- QBCore.Debug(data)
+    -- QBCore.Debug(Mods)
     local pid = data.player
     local price = data.price
-    TriggerServerEvent('ik-vehreports:server:SendReceiptForConfirm', pid, price)
+    TriggerServerEvent('ik-vehreports:server:SendReceiptForConfirm', pid, price, Mods)
 end)
 
 RegisterNUICallback('AcceptReceipt', function(data)
     local account = data.account
     local price = data.price
     local funds = data.funds
-    TriggerServerEvent('ik-vehreports:server:PayForReceipt', account, price, funds)
+    TriggerServerEvent('ik-vehreports:server:PayForReceipt', account, price, funds, Mods)
 end)
 
 RegisterNUICallback('close', function()
@@ -183,3 +200,4 @@ end)
 
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function() local player = QBCore.Functions.GetPlayerData() PlayerJob = player.job end)
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo) PlayerJob = JobInfo end)
+AddEventHandler('onResourceStart', function(resource) if resource == GetCurrentResourceName() then local player = QBCore.Functions.GetPlayerData() PlayerJob = player.job end end)

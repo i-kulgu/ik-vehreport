@@ -1,9 +1,22 @@
-$(document).ready(function(){
-        $(".confirmtext").html("Do you want to pay $2500 by bank for the receipt that Pieter Post sends you?")
-        $('#confirmreceiptmodal').modal()
-        $('#accept-receipt').attr('data-price', 2500);
-        $('#accept-receipt').attr('data-account', "bank");
- });
+CloseNui = function(){
+    $.post('https://ik-vehreport/close');
+    $(".vehreports-container").css("display", "none")
+    $(".vehreports-content-name").html("")
+    $('#confirmreceiptmodal').modal('hide')
+    $("#nearbyplayersselection").html("")
+    $("#confirmtext").html("")
+    $(".receipt-btn-group").html("")
+    $("#plate").html("")
+    $("#receiptprice").val("")
+    $("#engine").html("")
+    $("#brakes").html("")
+    $("#transmission").html("")
+    $("#suspension").html("")
+    $("#armor").html("")
+    $("#turbo").html("")
+    $("#nos").html("")
+}
+
 window.addEventListener("message", function(event){
     if(event.data.action == "show"){
         var CarInfo = event.data.mods
@@ -23,20 +36,20 @@ window.addEventListener("message", function(event){
         }
         if (event.data.job == "true"){
             $(".logo-container").append(`<div class="receipt-btn-group">
-            <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#sendreceiptmodal" data-carinfo="`+CarInfo+`">Send Receipt</button>
+            <button type="button" class="btn btn-outline-secondary" id="sendreceipt" data-toggle="modal" data-target="#sendreceiptmodal">Send Receipt</button>
           </div>`)
         }
     } else if (event.data.action == "NearPlayers"){
         $.each(event.data.players, function (index, player) {
-            $("#nearbyplayersselection").append('<option value="'+player.ped+'">'+player.name+'</option>');
+            $("#nearbyplayersselection").append('<option value="'+player.ped+'" id="playeroption">'+player.name+'</option>');
         });
     } else if (event.data.action == "confirm"){
         var price = event.data.price
         var account = event.data.account
         var sender = event.data.sendername
         var funds = event.data.funds
-        $(".confirmtext").html("Do you want to pay $"+price+" by "+account+" for the receipt that "+sender+" sends you?")
-        $('#confirmreceiptmodal').modal()
+        $("#confirmtext").html("Do you want to pay $"+price+" by "+account+" for the receipt that "+sender+" sends you?")
+        $('#confirmreceiptmodal').modal('show')
         $('#accept-receipt').attr('data-price', price);
         $('#accept-receipt').attr('data-account', account);
         if (funds != 'N/A'){ $('#accept-receipt').attr('data-funds', funds); }
@@ -45,43 +58,22 @@ window.addEventListener("message", function(event){
 
 window.addEventListener("keydown", (e) => {
     if (e.code == "Escape" || e.key == "Escape") {
-        $.post('https://ik-vehreport/close');
-        $(".vehreports-container").css("display", "none")
-        $(".vehreports-content-name").html("")
-        $("#plate").html("")
-        $("#engine").html("")
-        $("#brakes").html("")
-        $("#transmission").html("")
-        $("#suspension").html("")
-        $("#armor").html("")
-        $("#turbo").html("")
-        $("#nos").html("")
+        CloseNui()
     }
 });
 
 $(document).on("click", "#close-btn", function () {
-    $.post('https://ik-vehreport/close')
-    $(".vehreports-container").css("display", "none")
-    $(".vehreports-content-name").html("")
-    $("#plate").html("")
-    $("#engine").html("")
-    $("#brakes").html("")
-    $("#transmission").html("")
-    $("#suspension").html("")
-    $("#armor").html("")
-    $("#turbo").html("")
-    $("#nos").html("")
+    CloseNui()
 })
 
 $(document).on("click", "#send-receipt", function () {
-    var pid = $("#nearbyplayersselection").val();
+    var pid = $("#playeroption").val();
     var price = $("#receiptprice").val();
-    var carinfo = $('#send-receipt').data('carinfo')
     $.post('https://ik-vehreport/SendReceipt', JSON.stringify({
         player: pid,
         price: price,
-        carinfo : carinfo
     }))
+    CloseNui()
 })
 
 $(document).on("click", "#sendreceipt", function () {
@@ -97,4 +89,5 @@ $(document).on("click", "#accept-receipt", function () {
         account : account,
         funds: funds
     }))
+    CloseNui()
 })
