@@ -1,5 +1,7 @@
 # ik-vehcontrol
 
+If you like my work and want to support me : [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F2F3EU9ME)
+
 You can reach me at [Hi-Dev](https://discord.com/invite/pSJPPctrNx)
 
 # Preview 
